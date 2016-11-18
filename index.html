@@ -70,24 +70,32 @@
 				aInput[2].onclick=function(){ //删除所有记录
 					window.localStorage.clear();
 					listUl.innerHTML='';
+					iNow=0;
 				}
 				
 				aInput[3].onclick=function(){ //记录地图
 					var This=this;
 					//得到当前的地理位置坐标
 					navigator.geolocation.getCurrentPosition(function(position){
+						var x=position.coords.longitude;
+						var y=position.coords.latitude;
+						alert(x);
 						if (This.checked) {
 							var x=position.coords.longitude;
 							var y=position.coords.latitude;
 							window.localStorage.setItem('x'+iNow,x);
 							window.localStorage.setItem('y'+iNow,y);
-							
 						} else{
 							window.localStorage.removeItem('x'+iNow);
 							window.localStorage.removeItem('y'+iNow);
 						}
 					},function(err){
 						alert("获取地理位置失败，错误代码："+err.code);
+					},{
+						enableHighAcuracy : true,
+						timeout : 2000,
+						maximumAge : 5000,
+						frequency : 1000
 					});
 				}
 				
