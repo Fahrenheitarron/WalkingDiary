@@ -77,9 +77,6 @@
 					var This=this;
 					//得到当前的地理位置坐标
 					navigator.geolocation.getCurrentPosition(function(position){
-						var x=position.coords.longitude;
-						var y=position.coords.latitude;
-						alert(x);
 						if (This.checked) {
 							var x=position.coords.longitude;
 							var y=position.coords.latitude;
@@ -93,7 +90,7 @@
 						alert("获取地理位置失败，错误代码："+err.code);
 					},{
 						enableHighAcuracy : true,
-						timeout : 2000,
+						timeout : 3000,
 						maximumAge : 5000,
 						frequency : 1000
 					});
