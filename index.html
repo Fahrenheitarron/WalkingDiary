@@ -43,6 +43,7 @@
 				var oBox2_input = aBox[2].getElementsByTagName('input')[0];
 				var iNow = window.localStorage.getItem('num') || 0;
 				var index=0;
+				var map = new BMap.Map("map");    // 创建Map实例
 				
 				if (window.localStorage.getItem('num')!=null) {
 					for (var i=0;i<iNow;i++) {
@@ -65,6 +66,23 @@
 						changeLi();
 						window.localStorage.setItem('num',iNow);
 					}
+					var geolocation = new BMap.Geolocation();
+					geolocation.getCurrentPosition(function(r){
+						if(this.getStatus() == BMAP_STATUS_SUCCESS){
+							map.panTo(r.point);
+							if (aInput[3].checked) {
+								window.localStorage.setItem('x'+iNow,r.point.lng);
+								window.localStorage.setItem('y'+iNow,r.point.lat);
+							} else{
+								window.localStorage.removeItem('x'+iNow);
+								window.localStorage.removeItem('y'+iNow);
+							}
+							//alert('您的位置：'+r.point.lng+','+r.point.lat);
+						}
+						else {
+							alert('failed'+this.getStatus());
+						}        
+					},{enableHighAccuracy: true})
 				}
 				
 				aInput[2].onclick=function(){ //删除所有记录
@@ -76,7 +94,10 @@
 				aInput[3].onclick=function(){ //记录地图
 					var This=this;
 					//得到当前的地理位置坐标
-					navigator.geolocation.getCurrentPosition(function(position){
+					/*navigator.geolocation.getCurrentPosition(function(position){
+						var x=position.coords.longitude;
+						var y=position.coords.latitude;
+						alert(x);
 						if (This.checked) {
 							var x=position.coords.longitude;
 							var y=position.coords.latitude;
@@ -93,7 +114,24 @@
 						timeout : 3000,
 						maximumAge : 5000,
 						frequency : 1000
-					});
+					});*/
+					var geolocation = new BMap.Geolocation();
+					geolocation.getCurrentPosition(function(r){
+						if(this.getStatus() == BMAP_STATUS_SUCCESS){
+							map.panTo(r.point);
+							if (This.checked) {
+								window.localStorage.setItem('x'+iNow,r.point.lng);
+								window.localStorage.setItem('y'+iNow,r.point.lat);
+							} else{
+								window.localStorage.removeItem('x'+iNow);
+								window.localStorage.removeItem('y'+iNow);
+							}
+							//alert('您的位置：'+r.point.lng+','+r.point.lat);
+						}
+						else {
+							alert('failed'+this.getStatus());
+						}        
+					},{enableHighAccuracy: true})
 				}
 				
 				aBox1_input[0].onclick=function(){
@@ -102,7 +140,7 @@
 				aBox1_input[1].onclick=function(){
 					move(oUl,{left:-2*aBox[0].offsetWidth},15);
 					// 百度地图API功能
-					var map = new BMap.Map("map");    // 创建Map实例
+					
 					var x=window.localStorage.getItem('x'+index);
 					var y=window.localStorage.getItem('y'+index);
 					var pt = new BMap.Point(x, y);
@@ -118,7 +156,7 @@
 					var sContent =
 						"<h4 style='margin:0 0 5px 0;padding:0.2em 0'>"+title+"</h4>" + 
 						"<img style='float:right;margin:4px' id='imgDemo' src='img/touxiang.jpg' width='80' height='80' title='"+title+"'/>" + 
-						"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+con+"</p>" + 
+						"<p style='margin:0;line-height:1.5;font-size:13px;'>"+con+"</p>" + 
 						"</div>";
 					var infoWindow = new BMap.InfoWindow(sContent);  // 创建信息窗口对象
 					marker.addEventListener("click", function(){          
